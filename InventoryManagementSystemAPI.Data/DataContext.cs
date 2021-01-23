@@ -1,8 +1,8 @@
 ﻿using System;
-using InventoryManagementSystemAPI.Domain;
+using InventoryManagementSystemAPI.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryManagementSystemAPI.Persistence
+namespace InventoryManagementSystemAPI.Data
 {
     public class DataContext : DbContext
     {

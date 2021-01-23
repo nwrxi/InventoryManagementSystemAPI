@@ -9,8 +9,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\InventoryManagementSystemAPI.Domain\InventoryManagementSystemAPI.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

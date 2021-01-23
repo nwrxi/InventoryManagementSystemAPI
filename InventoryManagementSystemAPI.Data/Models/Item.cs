@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace InventoryManagementSystemAPI.Domain
+namespace InventoryManagementSystemAPI.Data.Models
 {
     public class Item
     {
@@ -13,6 +13,6 @@ namespace InventoryManagementSystemAPI.Domain
         [Required]
         public string Barcode { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
     }
 }
