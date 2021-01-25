@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using InventoryManagementSystemAPI.Data.CustomValidators;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystemAPI.Data.Models
 {
+    [Index(nameof(Barcode), IsUnique = true)]
     public class Item
     {
         public Guid Id { get; set; }
@@ -12,7 +14,7 @@ namespace InventoryManagementSystemAPI.Data.Models
         [Required]
         public DateTime DateAdded { get; set; }
         [Required]
-        [Barcode(ErrorMessage = "Invalid Barcode. Supported formats: GTIN-8, GTIN-12, GTIN-13, GTIN-14")]
+        [Barcode("Invalid Barcode. Supported formats: GTIN-8, GTIN-12, GTIN-13, GTIN-14", true)]
         public string Barcode { get; set; }
         [Required]
         public int? UserId { get; set; }
