@@ -14,7 +14,7 @@ namespace InventoryManagementSystemAPI.Data.Models
         [Required]
         public DateTime DateAdded { get; set; }
         [Required]
-        [Barcode("Invalid Barcode. Supported formats: GTIN-8, GTIN-12, GTIN-13, GTIN-14", true)]
+        [Barcode("Invalid Barcode. Supported formats: GTIN-8, GTIN-12, GTIN-13, GTIN-14")]
         public string Barcode { get; set; }
         [Required]
         public int? UserId { get; set; }

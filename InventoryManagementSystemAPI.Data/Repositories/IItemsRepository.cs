@@ -13,5 +13,6 @@ namespace InventoryManagementSystemAPI.Data.Repositories
         Task UpdateItem(Item item);
         Task DeleteItem(Item item);
         bool ItemExists(Guid id);
+        bool BarcodeExists(string barcode);
     }
 }
