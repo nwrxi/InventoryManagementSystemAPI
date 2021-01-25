@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InventoryManagementSystemAPI.Persistence\InventoryManagementSystemAPI.Persistence.csproj" />
+    <ProjectReference Include="..\InventoryManagementSystemAPI.Data\InventoryManagementSystemAPI.Data.csproj" />
   </ItemGroup>
 
 </Project>
