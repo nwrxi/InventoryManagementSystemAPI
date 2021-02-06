@@ -3,14 +3,16 @@ using System;
 using InventoryManagementSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InventoryManagementSystemAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210206101848_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,25 +49,25 @@ namespace InventoryManagementSystemAPI.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a11fe921-dee1-4b35-a877-ca848bf1ecdb"),
+                            Id = new Guid("01529d5b-0164-4557-b20e-06adb9b7e47f"),
                             Barcode = "3070006005009",
-                            DateAdded = new DateTime(2021, 2, 6, 13, 21, 54, 834, DateTimeKind.Local).AddTicks(1466),
+                            DateAdded = new DateTime(2021, 2, 6, 11, 18, 47, 941, DateTimeKind.Local).AddTicks(9959),
                             Name = "Item 1",
                             UserId = 0
                         },
                         new
                         {
-                            Id = new Guid("46ab9fa1-d75f-49dc-9cbd-a870c95d3240"),
+                            Id = new Guid("a06170fc-cd9d-425e-a993-764adb2db441"),
                             Barcode = "0070006005002",
-                            DateAdded = new DateTime(2021, 2, 6, 13, 21, 54, 836, DateTimeKind.Local).AddTicks(7031),
+                            DateAdded = new DateTime(2021, 2, 6, 11, 18, 47, 944, DateTimeKind.Local).AddTicks(5883),
                             Name = "Item 2",
                             UserId = 1
                         },
                         new
                         {
-                            Id = new Guid("5d4cd258-d9a6-48a3-bdb2-af2257919d5f"),
+                            Id = new Guid("87322a2b-cc22-49bd-8401-7f61c552ad73"),
                             Barcode = "8074001005038",
-                            DateAdded = new DateTime(2021, 2, 6, 13, 21, 54, 836, DateTimeKind.Local).AddTicks(7054),
+                            DateAdded = new DateTime(2021, 2, 6, 11, 18, 47, 944, DateTimeKind.Local).AddTicks(5906),
                             Name = "Item 3",
                             UserId = 2
                         });
@@ -94,10 +96,6 @@ namespace InventoryManagementSystemAPI.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");
 
@@ -120,6 +118,10 @@ namespace InventoryManagementSystemAPI.Data.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("SecondName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");

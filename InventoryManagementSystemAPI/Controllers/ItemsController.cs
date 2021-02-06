@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using InventoryManagementSystemAPI.Data.Models;
 using InventoryManagementSystemAPI.Data.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -75,6 +78,13 @@ namespace InventoryManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
+            if (_repository.BarcodeExists(item.Barcode))
+            {
+                ModelState.AddModelError(nameof(Item.Barcode), "Barcode isn't unique.");
+                return BadRequest(ModelState);
+                //return Problem("Barcode isn't unique", statusCode: (int)HttpStatusCode.BadRequest);
+            }
+
             await _repository.AddItem(item);
             return CreatedAtAction("GetItem", new { id = item.Id }, item);
         }

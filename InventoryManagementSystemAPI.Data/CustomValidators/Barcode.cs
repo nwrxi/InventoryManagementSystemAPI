@@ -9,13 +9,13 @@ namespace InventoryManagementSystemAPI.Data.CustomValidators
     public class Barcode : ValidationAttribute
     {
         private readonly string _errorMessage;
-        private readonly bool _isUnique;
+        //private readonly bool _isUnique;
         private readonly Regex _gtinRegex = new("^(\\d{8}|\\d{12,14})$");
 
-        public Barcode(string errorMessage, bool isUnique = false)
+        public Barcode(string errorMessage/*, bool isUnique = false*/)
         {
             _errorMessage = errorMessage;
-            _isUnique = isUnique;
+            //_isUnique = isUnique;
         }
         
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
@@ -33,10 +33,10 @@ namespace InventoryManagementSystemAPI.Data.CustomValidators
             
             if ((10 - (sum % 10)) % 10 == int.Parse(barcode[13].ToString())) // STEP 3 Equivalent to "Subtract the sum from the nearest equal or higher multiple of ten = CHECK DIGIT"
             {
-                if (_isUnique)
-                {
-                    if(context?.Items.FirstOrDefault(i => i.Barcode == value.ToString()) != null) return new ValidationResult("Not a unique barcode");
-                }
+                //if (_isUnique)
+                //{
+                //    if(context?.Items.FirstOrDefault(i => i.Barcode == value.ToString()) != null) return new ValidationResult("Not a unique barcode");
+                //}
                 return ValidationResult.Success; 
             }
             

@@ -59,5 +59,10 @@ namespace InventoryManagementSystemAPI.Data.Repositories
         {
             return _context.Items.Any(e => e.Id == id);
         }
+
+        public bool BarcodeExists(string barcode)
+        {
+            return _context.Items.Any(e => e.Barcode == barcode);
+        }
     }
 }
