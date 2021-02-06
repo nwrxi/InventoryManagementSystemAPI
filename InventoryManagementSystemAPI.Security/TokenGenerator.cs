@@ -4,17 +4,18 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.SecurityInterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace InventoryManagementSystemAPI.Security
 {
-    public class TokenGenerator
+    public abstract class TokenGenerator : ITokenGenerator
     {
         private readonly SymmetricSecurityKey _key;
 
-        public TokenGenerator(IConfiguration configuration)
+        protected TokenGenerator(IConfiguration configuration)
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenSecretKey"]));
         }
