@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementSystemAPI.Data.Models
 {
-    public class PublicUserInformation
+    public class PublicUserViewModel
     {
         public string Token { get; set; }
         public string Username { get; set; }

@@ -2,6 +2,8 @@ using System.Text;
 using InventoryManagementSystemAPI.Data;
 using InventoryManagementSystemAPI.Data.Models;
 using InventoryManagementSystemAPI.Data.Repositories;
+using InventoryManagementSystemAPI.Data.SecurityInterfaces;
+using InventoryManagementSystemAPI.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,6 +34,8 @@ namespace InventoryManagementSystemAPI
             });
             services.AddControllers();
 
+            services.AddAutoMapper(typeof(Startup));
+
             var builder = services.AddIdentityCore<User>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
@@ -52,6 +56,7 @@ namespace InventoryManagementSystemAPI
             });
 
             services.AddScoped<IItemsRepository, SqlItemRepository>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

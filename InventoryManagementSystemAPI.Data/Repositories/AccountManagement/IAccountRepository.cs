@@ -5,6 +5,6 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
 {
     public interface IAccountRepository
     {
-        Task<User> Login(Login login);
+        Task<PublicUserViewModel> Login(Login login);
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 using InventoryManagementSystemAPI.Data.Models;
 using InventoryManagementSystemAPI.Data.SecurityInterfaces;
 using Microsoft.AspNetCore.Identity;
@@ -11,14 +13,16 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenGenerator _tokenGenerator;
+        private readonly IMapper _mapper;
 
-        public SqlAccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator)
+        public SqlAccountRepository(UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
+            _mapper = mapper;
         }
-        public async Task<User> Login(Login login)
+        public async Task<PublicUserViewModel> Login(Login login)
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
 
@@ -29,17 +33,12 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
 
             if (result.Succeeded)
             {
-                //TODO: generate token
-                return new User
-                {
-                    DisplayName = user.DisplayName,
-                    Token = _jwtGenerator.CreateToken(user),
-                    Username = user.UserName,
-                    Image = null
-                };
+                var userViewModel = _mapper.Map<PublicUserViewModel>(user);
+                userViewModel.Token = _tokenGenerator.GenerateToken(user);
+                return userViewModel;
             }
 
-            throw new RestException(HttpStatusCode.Unauthorized);
+            return null;
         }
     }
 }
