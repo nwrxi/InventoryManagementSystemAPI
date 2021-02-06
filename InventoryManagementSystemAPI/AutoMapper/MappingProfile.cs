@@ -7,7 +7,7 @@ namespace InventoryManagementSystemAPI.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<User, PublicUserInformation>();
+            CreateMap<User, PublicUserViewModel>();
         }
     }
 }

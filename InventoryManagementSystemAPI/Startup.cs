@@ -2,6 +2,7 @@ using System.Text;
 using InventoryManagementSystemAPI.Data;
 using InventoryManagementSystemAPI.Data.Models;
 using InventoryManagementSystemAPI.Data.Repositories;
+using InventoryManagementSystemAPI.Data.Repositories.AccountManagement;
 using InventoryManagementSystemAPI.Data.SecurityInterfaces;
 using InventoryManagementSystemAPI.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -28,6 +29,7 @@ namespace InventoryManagementSystemAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
@@ -55,8 +57,9 @@ namespace InventoryManagementSystemAPI
                 };
             });
 
-            services.AddScoped<IItemsRepository, SqlItemRepository>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
+            services.AddScoped<IItemsRepository, SqlItemRepository>();
+            services.AddScoped<IAccountRepository, SqlAccountRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

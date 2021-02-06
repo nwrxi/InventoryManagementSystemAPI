@@ -8,6 +8,6 @@ namespace InventoryManagementSystemAPI.Data.Models
         [Required]
         public string FirstName { get; set; }
         [Required]
-        public string SecondName { get; set; }
+        public string LastName { get; set; }
     }
 }

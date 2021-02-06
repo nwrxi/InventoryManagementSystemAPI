@@ -11,11 +11,11 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace InventoryManagementSystemAPI.Security
 {
-    public abstract class TokenGenerator : ITokenGenerator
+    public class TokenGenerator : ITokenGenerator
     {
         private readonly SymmetricSecurityKey _key;
 
-        protected TokenGenerator(IConfiguration configuration)
+        public TokenGenerator(IConfiguration configuration)
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenSecretKey"]));
         }

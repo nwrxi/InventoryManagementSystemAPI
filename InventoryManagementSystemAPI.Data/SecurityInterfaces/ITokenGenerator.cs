@@ -4,6 +4,6 @@ namespace InventoryManagementSystemAPI.Data.SecurityInterfaces
 {
     public interface ITokenGenerator
     {
-        public string GenerateToken(User user);
+        string GenerateToken(User user);
     }
 }
