@@ -33,5 +33,24 @@ namespace InventoryManagementSystemAPI.Controllers
 
             return result;
         }
+
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<PublicUserViewModel>> Register(Register userRegister)
+        {
+            if (await _repository.EmailExists(userRegister.Email))
+                return BadRequest(new {Email = "Email already exists"});
+
+            if (await _repository.UsernameExists(userRegister.UserName))
+                return BadRequest(new { Username = "Username already exists"});
+
+            return await _repository.Register(userRegister);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<PublicUserViewModel>> GetCurrentUser()
+        {
+            return await _repository.GetCurrentUser();
+        }
     }
 }
