@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+using AutoMapper;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +18,17 @@ namespace InventoryManagementSystemAPI.Controllers
     public class ItemsController : ControllerBase
     {
         private readonly IItemsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public ItemsController(IItemsRepository repository)
+        public ItemsController(IItemsRepository repository, IMapper mapper)
         {
             _repository = repository;
+            _mapper = mapper;
         }
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<List<Item>>> GetItems()
+        public async Task<ActionResult<List<ItemDto>>> GetItems()
         {
             return await _repository.GetItems();
             //var a = await _context.Post.Skip(page * pageSize).Take(pageSize).ToListAsync();
@@ -32,7 +36,7 @@ namespace InventoryManagementSystemAPI.Controllers
 
         // GET: api/Items/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(Guid id)
+        public async Task<ActionResult<ItemDto>> GetItem(Guid id)
         {
             var item = await _repository.GetItem(id);
 
@@ -76,7 +80,7 @@ namespace InventoryManagementSystemAPI.Controllers
         // POST: api/Items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<ItemDto>> PostItem(Item item)
         {
             if (_repository.BarcodeExists(item.Barcode))
             {
@@ -84,23 +88,27 @@ namespace InventoryManagementSystemAPI.Controllers
                 return BadRequest(ModelState);
                 //return Problem("Barcode isn't unique", statusCode: (int)HttpStatusCode.BadRequest);
             }
-
             await _repository.AddItem(item);
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return CreatedAtAction("GetItem", new { id = item.Id }, _mapper.Map<ItemDto>(item));
         }
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Item>> DeleteItem(Guid id)
         {
-            var item = await _repository.GetItem(id);
+            //var item = await _repository.GetItem(id);
+
+            //if (item == null)
+            //{
+            //    return NotFound();
+            //}
+
+            var item = await _repository.DeleteItem(id);
 
             if (item == null)
             {
                 return NotFound();
             }
-
-            await _repository.DeleteItem(item);
 
             return item;
         }

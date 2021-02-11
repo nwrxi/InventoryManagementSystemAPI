@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -12,6 +14,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
 {
     public class JwtAccountRepository : IAccountRepository
     {
+        private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ITokenGenerator _tokenGenerator;
@@ -19,8 +22,9 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         private readonly IUserAccessor _userAccessor;
 
         public JwtAccountRepository
-            (UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
+            (DataContext _context,UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
         {
+            this._context = _context;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
@@ -48,8 +52,10 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
 
         public async Task<PublicUserViewModel> GetCurrentUser()
         {
-            var user = await _userManager.FindByIdAsync(_userAccessor.GetCurrentUserId());
-            
+            var currentId = _userAccessor.GetCurrentUserId();
+            //var user = await _context.Users.Include(x => x.Items).FirstOrDefaultAsync(x => x.Id == currentId);
+            var user = await _userManager.FindByIdAsync(currentId);
+
             var publicUser = _mapper.Map<PublicUserViewModel>(user);
             publicUser.Token = _tokenGenerator.GenerateToken(user);
             return publicUser;

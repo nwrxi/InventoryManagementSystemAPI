@@ -24,7 +24,7 @@ namespace InventoryManagementSystemAPI.Data.CustomValidators
                 .GetService(typeof(DataContext));
 
             var barcode = value.ToString();
-            
+
             if (!(_gtinRegex.IsMatch(barcode!))) return new ValidationResult(_errorMessage); // check if all digits and with 8, 12, 13 or 14 digits
             
             barcode = barcode.PadLeft(14, '0'); // stuff zeros at start to guarantee 14 digits
@@ -39,7 +39,7 @@ namespace InventoryManagementSystemAPI.Data.CustomValidators
                 //}
                 return ValidationResult.Success; 
             }
-            
+
             return new ValidationResult(_errorMessage);
         }
     }

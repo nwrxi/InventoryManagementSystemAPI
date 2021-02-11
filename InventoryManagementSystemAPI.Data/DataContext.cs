@@ -18,11 +18,11 @@ namespace InventoryManagementSystemAPI.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Item>().HasData(
-                new Item { Id = Guid.NewGuid(), Name = "Item 1", Barcode = "3070006005009", DateAdded = DateTime.Now, UserId = 0},
-                new Item { Id = Guid.NewGuid(), Name = "Item 2", Barcode = "0070006005002", DateAdded = DateTime.Now, UserId = 1},
-                new Item { Id = Guid.NewGuid(), Name = "Item 3", Barcode = "8074001005038", DateAdded = DateTime.Now, UserId = 2}
-            );
+            //builder.Entity<Item>().HasData(
+            //    new Item { Id = Guid.NewGuid(), Name = "Item 1", Barcode = "3070006005009", DateAdded = DateTime.Now, UserId = "47a4f0e4-b429-47b6-9bb2-78188ad855f1" },
+            //    new Item { Id = Guid.NewGuid(), Name = "Item 2", Barcode = "0070006005002", DateAdded = DateTime.Now, UserId = "47a4f0e4-b429-47b6-9bb2-78188ad855f1" },
+            //    new Item { Id = Guid.NewGuid(), Name = "Item 3", Barcode = "8074001005038", DateAdded = DateTime.Now, UserId = "47a4f0e4-b429-47b6-9bb2-78188ad855f1" }
+            //);
         }
     }
 }

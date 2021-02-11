@@ -3,14 +3,16 @@ using System;
 using InventoryManagementSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InventoryManagementSystemAPI.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210209154003_AddUserItemRelationship")]
+    partial class AddUserItemRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +36,7 @@ namespace InventoryManagementSystemAPI.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -249,8 +252,10 @@ namespace InventoryManagementSystemAPI.Data.Migrations
             modelBuilder.Entity("InventoryManagementSystemAPI.Data.Models.Item", b =>
                 {
                     b.HasOne("InventoryManagementSystemAPI.Data.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Items")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -304,6 +309,11 @@ namespace InventoryManagementSystemAPI.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("InventoryManagementSystemAPI.Data.Models.User", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
