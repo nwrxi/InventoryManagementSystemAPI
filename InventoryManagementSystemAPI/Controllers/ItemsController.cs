@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
+using AutoMapper;
+using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
+using InventoryManagementSystemAPI.Data.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagementSystemAPI.Domain;
-using InventoryManagementSystemAPI.Persistence;
 
 namespace InventoryManagementSystemAPI.Controllers
 {
@@ -13,25 +17,28 @@ namespace InventoryManagementSystemAPI.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly IItemsRepository _repository;
+        private readonly IMapper _mapper;
 
-        public ItemsController(DataContext context)
+        public ItemsController(IItemsRepository repository, IMapper mapper)
         {
-            _context = context;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        public async Task<ActionResult<List<ItemDto>>> GetItems()
         {
-            return await _context.Items.ToListAsync();
+            return await _repository.GetItems();
+            //var a = await _context.Post.Skip(page * pageSize).Take(pageSize).ToListAsync();
         }
 
         // GET: api/Items/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Item>> GetItem(Guid id)
+        public async Task<ActionResult<ItemDto>> GetItem(Guid id)
         {
-            var item = await _context.Items.FindAsync(id);
+            var item = await _repository.GetItem(id);
 
             if (item == null)
             {
@@ -51,15 +58,13 @@ namespace InventoryManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _repository.UpdateItem(item);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ItemExists(id))
+                if (!_repository.ItemExists(id))
                 {
                     return NotFound();
                 }
@@ -75,33 +80,37 @@ namespace InventoryManagementSystemAPI.Controllers
         // POST: api/Items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<ItemDto>> PostItem(Item item)
         {
-            await _context.Items.AddAsync(item);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            if (_repository.BarcodeExists(item.Barcode))
+            {
+                ModelState.AddModelError(nameof(Item.Barcode), "Barcode isn't unique.");
+                return BadRequest(ModelState);
+                //return Problem("Barcode isn't unique", statusCode: (int)HttpStatusCode.BadRequest);
+            }
+            await _repository.AddItem(item);
+            return CreatedAtAction("GetItem", new { id = item.Id }, _mapper.Map<ItemDto>(item));
         }
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteItem(Guid id)
+        public async Task<ActionResult<Item>> DeleteItem(Guid id)
         {
-            var item = await _context.Items.FindAsync(id);
+            //var item = await _repository.GetItem(id);
+
+            //if (item == null)
+            //{
+            //    return NotFound();
+            //}
+
+            var item = await _repository.DeleteItem(id);
+
             if (item == null)
             {
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ItemExists(Guid id)
-        {
-            return _context.Items.Any(e => e.Id == id);
+            return item;
         }
     }
 }
