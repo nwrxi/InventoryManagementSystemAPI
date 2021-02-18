@@ -65,7 +65,8 @@ namespace InventoryManagementSystemAPI
 
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IItemsRepository, SqlItemRepository>();
-            services.AddScoped<IAccountRepository, SqlAccountRepository>();
+            services.AddScoped<IAccountRepository, JwtAccountRepository>();
+            services.AddScoped<IUserAccessor, UserAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
