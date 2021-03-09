@@ -22,9 +22,9 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         private readonly IUserAccessor _userAccessor;
 
         public JwtAccountRepository
-            (DataContext _context,UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
+            (DataContext context, UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
         {
-            this._context = _context;
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;

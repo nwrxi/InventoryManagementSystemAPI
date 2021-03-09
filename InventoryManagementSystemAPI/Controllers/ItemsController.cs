@@ -7,6 +7,7 @@ using AutoMapper;
 using InventoryManagementSystemAPI.Data.Models;
 using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,7 @@ namespace InventoryManagementSystemAPI.Controllers
         // PUT: api/Items/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Policy = "IsItemCreatorOrAdmin")]
         public async Task<IActionResult> PutItem(Guid id, Item item)
         {
             if (id != item.Id)
@@ -94,15 +96,9 @@ namespace InventoryManagementSystemAPI.Controllers
 
         // DELETE: api/Items/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "IsItemCreatorOrAdmin")]
         public async Task<ActionResult<Item>> DeleteItem(Guid id)
         {
-            //var item = await _repository.GetItem(id);
-
-            //if (item == null)
-            //{
-            //    return NotFound();
-            //}
-
             var item = await _repository.DeleteItem(id);
 
             if (item == null)

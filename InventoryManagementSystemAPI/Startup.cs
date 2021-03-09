@@ -1,6 +1,7 @@
 using System.Text;
 using InventoryManagementSystemAPI.Data;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.Seed;
 using InventoryManagementSystemAPI.Data.Repositories;
 using InventoryManagementSystemAPI.Data.Repositories.AccountManagement;
 using InventoryManagementSystemAPI.Data.SecurityInterfaces;
@@ -36,6 +37,22 @@ namespace InventoryManagementSystemAPI
             {
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+                });
+            });
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsItemCreatorOrAdmin", policy =>
+                {
+                    policy.Requirements.Add(new IsCreatorOrAdmin());
+                });
+            });
+            services.AddTransient<IAuthorizationHandler, IsCreatorOrAdminHandler>();
+
             services.AddControllers(opt =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -46,8 +63,11 @@ namespace InventoryManagementSystemAPI
 
             var builder = services.AddIdentityCore<User>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+            identityBuilder.AddRoles<IdentityRole>();
             identityBuilder.AddEntityFrameworkStores<DataContext>();
             identityBuilder.AddSignInManager<SignInManager<User>>();
+
+         
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenSecretKey"]));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
@@ -67,10 +87,13 @@ namespace InventoryManagementSystemAPI
             services.AddScoped<IItemsRepository, SqlItemRepository>();
             services.AddScoped<IAccountRepository, JwtAccountRepository>();
             services.AddScoped<IUserAccessor, UserAccessor>();
+
+            services.AddTransient<SeedRoles>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedRoles seed)
         {
             if (env.IsDevelopment())
             {
@@ -81,6 +104,8 @@ namespace InventoryManagementSystemAPI
 
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
+
             app.UseAuthentication();
 
             app.UseAuthorization();
@@ -89,6 +114,8 @@ namespace InventoryManagementSystemAPI
             {
                 endpoints.MapControllers();
             });
+
+            seed.SeedAdminUser();
         }
     }
 }
