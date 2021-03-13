@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 
 namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
 {
@@ -10,5 +12,6 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         Task<bool> EmailExists(string email);
         Task<bool> UsernameExists(string username);
         Task<PublicUserViewModel> GetCurrentUser();
+        Task<UserProfileDto> GetPublicUserInformation(string id);
     }
 }

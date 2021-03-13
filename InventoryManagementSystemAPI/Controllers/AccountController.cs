@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.Repositories.AccountManagement;
 using Microsoft.AspNetCore.Authorization;
 
@@ -51,6 +52,12 @@ namespace InventoryManagementSystemAPI.Controllers
         public async Task<ActionResult<PublicUserViewModel>> GetCurrentUser()
         {
             return await _repository.GetCurrentUser();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserPublicInfo(string id)
+        {
+            return await _repository.GetPublicUserInformation(id);
         }
     }
 }
