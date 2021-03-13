@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.SecurityInterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,9 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         private readonly IUserAccessor _userAccessor;
 
         public JwtAccountRepository
-            (DataContext _context,UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
+            (DataContext context, UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
         {
-            this._context = _context;
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
@@ -59,6 +60,12 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
             var publicUser = _mapper.Map<PublicUserViewModel>(user);
             publicUser.Token = _tokenGenerator.GenerateToken(user);
             return publicUser;
+        }
+
+        public async Task<UserProfileDto> GetPublicUserInformation(string id)
+        {
+            var user = await _context.Users.Include(x => x.Items).FirstOrDefaultAsync(u => u.Id == id);
+            return _mapper.Map<UserProfileDto>(user);
         }
 
         public async Task<PublicUserViewModel> Register(Register registerUser)
