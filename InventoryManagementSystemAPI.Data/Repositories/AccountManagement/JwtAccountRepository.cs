@@ -40,6 +40,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
                 return null;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+            
 
             if (result.Succeeded)
             {
@@ -73,6 +74,8 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
             var user = _mapper.Map<User>(registerUser);
 
             var result = await _userManager.CreateAsync(user, registerUser.Password);
+
+            user.IsAdmin = false;
 
             if (result.Succeeded)
             {

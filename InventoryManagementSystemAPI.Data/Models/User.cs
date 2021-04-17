@@ -12,6 +12,8 @@ namespace InventoryManagementSystemAPI.Data.Models
         public string FirstName { get; set; }
         [Required]
         public string LastName { get; set; }
+        [Required]
+        public bool IsAdmin { get; set; }
         [JsonIgnore]
         public IList<Item> Items { get; set; }
     }

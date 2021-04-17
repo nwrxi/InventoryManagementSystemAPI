@@ -8,6 +8,7 @@ namespace InventoryManagementSystemAPI.Data.Models.DTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public string IsAdmin { get; set; }
         public IList<ItemDto> Items { get; set; }
     }
 }
