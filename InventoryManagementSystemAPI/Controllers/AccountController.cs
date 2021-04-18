@@ -57,7 +57,14 @@ namespace InventoryManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserProfileDto>> GetUserPublicInfo(string id)
         {
-            return await _repository.GetPublicUserInformation(id);
+            var account =  await _repository.GetPublicUserInformation(id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
         }
     }
 }
