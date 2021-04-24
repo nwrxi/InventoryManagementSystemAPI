@@ -3,8 +3,10 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using InventoryManagementSystemAPI.Data;
+using InventoryManagementSystemAPI.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementSystemAPI.Security
@@ -17,20 +19,23 @@ namespace InventoryManagementSystemAPI.Security
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly DataContext _dbContext;
+        private readonly UserManager<User> _userManager;
 
-        public IsCreatorOrAdminHandler(IHttpContextAccessor httpContextAccessor, DataContext dbContext)
+        public IsCreatorOrAdminHandler(IHttpContextAccessor httpContextAccessor, DataContext dbContext, UserManager<User> userManager)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+            _userManager = userManager;
         }
 
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsCreatorOrAdmin requirement)
+        protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, IsCreatorOrAdmin requirement)
         {
             var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (userId == null) return Task.CompletedTask;
 
-            var isUserAdmin = context.User.IsInRole("Admin");
+            var isUserAdmin = await _userManager.IsInRoleAsync(user, "Admin");
 
             if(isUserAdmin)
             {
@@ -41,9 +46,9 @@ namespace InventoryManagementSystemAPI.Security
             var itemId = Guid.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues
                 .SingleOrDefault(x => x.Key == "id").Value?.ToString()!);
 
-            var item = _dbContext.Items
+            var item = await _dbContext.Items
                 .AsNoTracking()
-                .SingleOrDefaultAsync(x => x.Id == itemId).Result;
+                .SingleOrDefaultAsync(x => x.Id == itemId);
 
             if(item == null) return Task.CompletedTask;
 
