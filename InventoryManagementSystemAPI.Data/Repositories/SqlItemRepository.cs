@@ -16,6 +16,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories
         private readonly DataContext _context;
         private readonly IUserAccessor _userAccessor;
         private readonly UserManager<User> _userManager;
+        private DbSet<Item> _itemSet;
         private readonly IMapper _mapper;
 
         public SqlItemRepository(DataContext context, IUserAccessor userAccessor, UserManager<User> userManager, IMapper mapper)
@@ -60,21 +61,25 @@ namespace InventoryManagementSystemAPI.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateItem(Item item)
+        public async Task UpdateItem(Guid id, Item item)
         {
             if (item == null)
                 throw new ArgumentNullException($"{nameof(item)} entity can't be null");
 
-            var userId = _userAccessor.GetCurrentUserId();
-            var user = await _userManager.FindByIdAsync(userId);
+            //var userId = _userAccessor.GetCurrentUserId();
+            //var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null)
-                throw new ArgumentNullException($"{nameof(user)} entity can't be null");
+            //if (user == null)
+            //    throw new ArgumentNullException($"{nameof(user)} entity can't be null");
 
-            item.UserId = userId;
-            item.User = user;
+            //_context.Update(item);
 
-            _context.Update(item);
+            var itemInDb = await _context.Items.Include(i => i.User).FirstOrDefaultAsync(i => id == i.Id);
+
+            item.UserId = itemInDb.UserId;
+            item.User = itemInDb.User;
+
+            _context.Entry(itemInDb).CurrentValues.SetValues(item);
             await _context.SaveChangesAsync();
         }
 

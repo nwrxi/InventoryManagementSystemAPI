@@ -59,16 +59,21 @@ namespace InventoryManagementSystemAPI.Controllers
             {
                 return BadRequest();
             }
-
             try
             {
-                await _repository.UpdateItem(item);
+                await _repository.UpdateItem(id, item);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!_repository.ItemExists(id))
                 {
                     return NotFound();
+                }
+                if (_repository.BarcodeExists(item.Barcode))
+                {
+                    ModelState.AddModelError(nameof(Item.Barcode), "Barcode isn't unique.");
+                    return BadRequest(ModelState);
+                    //return Problem("Barcode isn't unique", statusCode: (int)HttpStatusCode.BadRequest);
                 }
                 else
                 {
