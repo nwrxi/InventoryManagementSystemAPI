@@ -87,6 +87,24 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
             throw new Exception("Problem with creating user");
         }
 
+        public async Task<PublicUserViewModel> RegisterAdmin(Register registerUser)
+        {
+            var user = _mapper.Map<User>(registerUser);
+
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+
+            user.IsAdmin = true;
+
+            if (result.Succeeded)
+            {
+                var returnUser = _mapper.Map<PublicUserViewModel>(user);
+                returnUser.Token = _tokenGenerator.GenerateToken(user);
+                return returnUser;
+            }
+
+            throw new Exception("Problem with creating user");
+        }
+
         public async Task<bool> EmailExists(string email)
         {
             return await _userManager.Users.AnyAsync(x => x.Email == email);

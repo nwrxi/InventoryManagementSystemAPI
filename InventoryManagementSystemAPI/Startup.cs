@@ -51,8 +51,13 @@ namespace InventoryManagementSystemAPI
                 {
                     policy.Requirements.Add(new IsCreatorOrAdmin());
                 });
+                opt.AddPolicy("IsAdmin", policy =>
+                {
+                    policy.Requirements.Add(new IsAdmin());
+                });
             });
             services.AddTransient<IAuthorizationHandler, IsCreatorOrAdminHandler>();
+            services.AddTransient<IAuthorizationHandler, IsAdminHandler>();
 
             services.AddControllers(opt =>
             {
