@@ -9,6 +9,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
     {
         Task<PublicUserViewModel> Login(Login login);
         Task<PublicUserViewModel> Register(Register userRegister);
+        Task<PublicUserViewModel> RegisterAdmin(Register userRegister);
         Task<bool> EmailExists(string email);
         Task<bool> UsernameExists(string username);
         Task<PublicUserViewModel> GetCurrentUser();
