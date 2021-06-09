@@ -92,11 +92,11 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
             var user = _mapper.Map<User>(registerUser);
 
             var result = await _userManager.CreateAsync(user, registerUser.Password);
-
             user.IsAdmin = true;
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRolesAsync(user, new List<string> { "Admin" });
                 var returnUser = _mapper.Map<PublicUserViewModel>(user);
                 returnUser.Token = _tokenGenerator.GenerateToken(user);
                 return returnUser;
