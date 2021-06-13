@@ -111,6 +111,9 @@ namespace InventoryManagementSystemAPI
 
             //app.UseHttpsRedirection();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseRouting();
 
             app.UseCors("CorsPolicy");
@@ -122,6 +125,7 @@ namespace InventoryManagementSystemAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
 
             seed.SeedAdminUser();
