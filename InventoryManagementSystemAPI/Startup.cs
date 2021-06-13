@@ -33,11 +33,13 @@ namespace InventoryManagementSystemAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<DataContext>(opt =>
             {
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                //Change version if error
+                var serverVersion = new MySqlServerVersion(new Version(8, 0, 25));
+                opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"), serverVersion);
             });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", policy =>
@@ -128,7 +130,7 @@ namespace InventoryManagementSystemAPI
                 endpoints.MapFallbackToController("Index", "Fallback");
             });
 
-            seed.SeedAdminUser();
+            seed.SeedAdminUser().Wait();
         }
     }
 }

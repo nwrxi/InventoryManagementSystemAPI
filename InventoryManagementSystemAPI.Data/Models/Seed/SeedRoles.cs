@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -16,7 +17,7 @@ namespace InventoryManagementSystemAPI.Data.Models.Seed
             _context = context;
         }
 
-        public async void SeedAdminUser()
+        public async Task SeedAdminUser()
         {
             var roleStore = new RoleStore<IdentityRole>(_context);
 

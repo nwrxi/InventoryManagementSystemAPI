@@ -29,7 +29,6 @@ namespace InventoryManagementSystemAPI.Data.Repositories
 
         public async Task<List<ItemDto>> GetItems()
         {
-            //todo: fix for others + DTOs
             var items = await _context.Items.Include(i => i.User).ToListAsync();
             return items.Select(item => _mapper.Map<ItemDto>(item)).ToList();
         }
