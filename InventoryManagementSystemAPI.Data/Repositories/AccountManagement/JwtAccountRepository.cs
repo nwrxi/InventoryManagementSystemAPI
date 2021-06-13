@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.SecurityInterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,9 +23,9 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
         private readonly IUserAccessor _userAccessor;
 
         public JwtAccountRepository
-            (DataContext _context,UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
+            (DataContext context, UserManager<User> userManager, SignInManager<User> signInManager, ITokenGenerator tokenGenerator, IMapper mapper, IUserAccessor userAccessor)
         {
-            this._context = _context;
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenGenerator = tokenGenerator;
@@ -39,6 +40,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
                 return null;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+            
 
             if (result.Succeeded)
             {
@@ -61,14 +63,40 @@ namespace InventoryManagementSystemAPI.Data.Repositories.AccountManagement
             return publicUser;
         }
 
+        public async Task<UserProfileDto> GetPublicUserInformation(string id)
+        {
+            var user = await _context.Users.Include(x => x.Items).FirstOrDefaultAsync(u => u.Id == id);
+            return _mapper.Map<UserProfileDto>(user);
+        }
+
         public async Task<PublicUserViewModel> Register(Register registerUser)
         {
             var user = _mapper.Map<User>(registerUser);
 
             var result = await _userManager.CreateAsync(user, registerUser.Password);
 
+            user.IsAdmin = false;
+
             if (result.Succeeded)
             {
+                var returnUser = _mapper.Map<PublicUserViewModel>(user);
+                returnUser.Token = _tokenGenerator.GenerateToken(user);
+                return returnUser;
+            }
+
+            throw new Exception("Problem with creating user");
+        }
+
+        public async Task<PublicUserViewModel> RegisterAdmin(Register registerUser)
+        {
+            var user = _mapper.Map<User>(registerUser);
+
+            var result = await _userManager.CreateAsync(user, registerUser.Password);
+            user.IsAdmin = true;
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRolesAsync(user, new List<string> { "Admin" });
                 var returnUser = _mapper.Map<PublicUserViewModel>(user);
                 returnUser.Token = _tokenGenerator.GenerateToken(user);
                 return returnUser;

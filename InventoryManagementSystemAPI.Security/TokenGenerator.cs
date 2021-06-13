@@ -27,7 +27,7 @@ namespace InventoryManagementSystemAPI.Security
                 Subject = new ClaimsIdentity(new List<Claim> {
                     new(JwtRegisteredClaimNames.NameId, user.Id)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(31),
                 SigningCredentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature)
             };
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InventoryManagementSystemAPI.Data.Models;
+using InventoryManagementSystemAPI.Data.Models.DTOs;
 using InventoryManagementSystemAPI.Data.Repositories.AccountManagement;
 using Microsoft.AspNetCore.Authorization;
 
@@ -44,13 +45,45 @@ namespace InventoryManagementSystemAPI.Controllers
             if (await _repository.UsernameExists(userRegister.UserName))
                 return BadRequest(new { Username = "Username already exists"});
 
+            if (userRegister.UserName.Contains(" "))
+                return BadRequest(new { Username = "Username can't contain spaces" });
+
             return await _repository.Register(userRegister);
+        }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost("registerAdmin")]
+        public async Task<ActionResult<PublicUserViewModel>> RegisterAdmin(Register userRegister)
+        {
+            if (await _repository.EmailExists(userRegister.Email))
+                return BadRequest(new { Email = "Email already exists" });
+
+            if (await _repository.UsernameExists(userRegister.UserName))
+                return BadRequest(new { Username = "Username already exists" });
+
+            if (userRegister.UserName.Contains(" "))
+                return BadRequest(new { Username = "Username can't contain spaces" });
+
+            return await _repository.RegisterAdmin(userRegister);
         }
 
         [HttpGet]
         public async Task<ActionResult<PublicUserViewModel>> GetCurrentUser()
         {
             return await _repository.GetCurrentUser();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserPublicInfo(string id)
+        {
+            var account =  await _repository.GetPublicUserInformation(id);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            return account;
         }
     }
 }

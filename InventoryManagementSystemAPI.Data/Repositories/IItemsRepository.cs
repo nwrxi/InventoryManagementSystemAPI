@@ -11,7 +11,7 @@ namespace InventoryManagementSystemAPI.Data.Repositories
         Task<List<ItemDto>> GetItems();
         Task<ItemDto> GetItem(Guid id);
         Task AddItem(Item item);
-        Task UpdateItem(Item item);
+        Task UpdateItem(Guid id, Item item);
         Task<Item> DeleteItem(Guid id);
         bool ItemExists(Guid id);
         bool BarcodeExists(string barcode);

@@ -12,8 +12,10 @@ namespace InventoryManagementSystemAPI.AutoMapper
             CreateMap<Register, User>();
             CreateMap<Item, ItemDto>().ForMember(x => x.User, opt=> opt.MapFrom(src => src.User));
 
-            CreateMap<User, UserDto>().ForMember(x => x.Items, opt => opt.Ignore());
+            CreateMap<User, UserItemDto>();
             CreateMap<ItemDto, Item>();
+
+            CreateMap<User, UserProfileDto>().ForMember(x => x.Items, opt => opt.MapFrom(src => src.Items));
         }
     }
 }
