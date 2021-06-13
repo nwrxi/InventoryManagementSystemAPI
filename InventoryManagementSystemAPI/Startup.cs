@@ -37,7 +37,7 @@ namespace InventoryManagementSystemAPI
             {
                 //Change version if error
                 var serverVersion = new MySqlServerVersion(new Version(8, 0, 25));
-                opt.UseMySql(Configuration.GetConnectionString("DefaultConnection"), serverVersion);
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             services.AddCors(options =>
