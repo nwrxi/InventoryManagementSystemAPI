@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using InventoryManagementSystemAPI.Data;
 using InventoryManagementSystemAPI.Data.Models;
@@ -41,8 +42,8 @@ namespace InventoryManagementSystemAPI
             {
                 options.AddPolicy("CorsPolicy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://10.0.2.2:3000");
+                    policy.AllowAnyHeader().WithExposedHeaders("WWW-Authenticate").AllowAnyMethod().WithOrigins("http://localhost:3000");
+                    policy.AllowAnyHeader().WithExposedHeaders("WWW-Authenticate").AllowAnyMethod().WithOrigins("http://10.0.2.2:3000");
                 });
             });
             services.AddAuthorization(opt =>
@@ -85,7 +86,9 @@ namespace InventoryManagementSystemAPI
                     //TODO: change for production
                     //We don't validate urls we are receiving or issuing tokens from
                     ValidateAudience = false,
-                    ValidateIssuer = false
+                    ValidateIssuer = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
