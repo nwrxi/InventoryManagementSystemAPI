@@ -12,6 +12,7 @@ namespace InventoryManagementSystemAPI.Data.Models.DTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public DateTime DateAdded { get; set; }
         public string Barcode { get; set; }
         public UserItemDto User { get; set; }

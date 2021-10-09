@@ -12,6 +12,7 @@ namespace InventoryManagementSystemAPI.Data.Models
         public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
+        public string Description { get; set; }
         [Required]
         public DateTime DateAdded { get; set; }
         [Required]
